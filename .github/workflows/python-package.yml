@@ -2,14 +2,28 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Greeting from YY Test 
-on: push
+on:
+  push:
+    branches: [ ci/enableCIaction ]
+
+  pull_request:
+    branches: [ master ]
+
+
 
 jobs:
-  my-job:
-    name: My Job
-    runs-on: ubuntu-latest
+  build:
+    name: Compile Build Images Job
+    
+    runs-on: ubuntu-latest  
+
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7, 3.8]
+        
     steps:
-    - name: Print a greeting
+    - uses: actions/checkout@v2
+    - name: Build Env Preparing
       env:
         MY_VAR: Hi there! My name is
         FIRST_NAME: Y
@@ -17,3 +31,28 @@ jobs:
         LAST_NAME: Y
       run: |
         echo $MY_VAR $FIRST_NAME $MIDDLE_NAME $LAST_NAME.
+        pwd
+        ls
+        df -h 
+        df -h `pwd`
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install kas
+        
+    - name: Build Example Image
+      run: |
+        kas build meta-iot2000/kas-example.yml
+        
+    - name: Build BSP Image
+      run: |
+        kas build meta-iot2000/kas-bsp.yml
+        
+    - name: Build BSP Image
+      run: |
+        kas build meta-iot2000/kas-sdk-windows-i586.yml
+        
+    - name: Build BSP Image
+      run: |
+        kas build meta-iot2000/kas-sdk-linux-x64.yml 
