@@ -36,7 +36,11 @@ jobs:
         sudo apt-get install libsdl1.2-dev xterm
         sudo apt-get install make xsltproc docbook-utils fop dblatex xmlto
         sudo apt-get install python-git
-        sudo pip3 install kas
+        echo "------------------------------------ Done ---------" Dependent Package Updated
+        
+    - name: Install python kas
+      run: |
+        pip3 install kas
         
     - name: Build Example Image
       run: |
